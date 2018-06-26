@@ -19,11 +19,12 @@ class UserController extends Controller
         $user = request()->validate([
             'name' => 'required|min:5|max:30',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6',
-            'password' => 'required|confirmed'
+            'password' => 'required|min:6'
         ]);
 
         $new_user = new User($user);
+
+        $new_user->password = bcrypt($new_user->password);
 
         $new_user->save();
     }
