@@ -66,10 +66,12 @@
                             message: "User successfully deleted"
                         }
                     });
+
                     if (self.$route.query.message)
                     {
                         self.message = self.$route.query.message
                     }
+
                     Event.$emit('fetchUsers');
                 })
                 
@@ -80,7 +82,7 @@
             Notification
         },
 
-        mounted() {
+        created() {
 
             this.getUsers();
 
