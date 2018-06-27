@@ -1,7 +1,15 @@
 <template>
-<div>
-<a class="button is-outlined" @click="back">Back</a>
-<form @submit.prevent="addUser">
+  <section class="section">
+    <div class="container">
+      <a class="button is-outlined" @click="back">Back</a>
+      <h1 class="title">User information</h1>
+      <hr>
+      <h2 class="subtitle">
+        <p>{{ user.name }}</p>
+        <br/>
+        <p>{{ user.email }}</p>
+      </h2>
+      <form @submit.prevent="editUser">
 <div class="field">
   <label class="label">Name</label>
   <div class="control has-icons-left has-icons-right">
@@ -28,7 +36,7 @@
   </div>
 </div>
 
-<div class="field">
+<!-- <div class="field">
   <label class="label">Password</label>
   <div class="control has-icons-left has-icons-right">
     <input class="input" type="password" placeholder="Password" value="" name="password" v-model="user.password">
@@ -39,52 +47,49 @@
       <i class="fas fa-check"></i>
     </span>
   </div>
-</div>
+</div> -->
 
 <div class="field is-grouped">
   <div class="control">
-    <button class="button is-link">Submit</button>
+    <button class="button is-link">Edit</button>
   </div>
 </div>
 </form>
-</div>
+    </div>
+  </section>
+
 </template>
 
 <script>
     export default {
+      props: ['userId'],
 
-        data(){
-            return {
-                user: {}
-            }
-        },
-
-        methods: {
-            addUser(){
-                let self = this;
-                axios.post('user', {
-                    name: this.user.name,
-                    email: this.user.email,
-                    password: this.user.password
-                })
-                .then(function (response) {
-                    self.$router.push({
-                        path: '/',
-                        query: {
-                            message: "User successfully added"
-                        }
-                    });
-                })
-            },
-
-          back()
-          {
-            this.$router.go(-1);
-          }
-        },
-
-        mounted() {
-            
+      data()
+      {
+        return {
+          user: {}
         }
+      },
+
+      methods: {
+
+        getUser(){
+          axios.get('user/'+this.userId)
+                .then( ({data}) => {
+                    this.user = data;
+                });
+        },
+
+        back()
+        {
+          this.$router.go(-1);
+        }
+        
+      },
+
+      created(){
+        this.getUser();
+      }
+
     }
 </script>
