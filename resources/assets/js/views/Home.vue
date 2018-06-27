@@ -7,18 +7,23 @@
       <th>ID</th>
       <th>Name</th>
       <th>E-mail</th>
+      <th>Card type</th>
       <th>Date Joined</th>
       <th>Date updated</th>
     </tr>
   </thead>
   <tbody>
-    <tr v-for="user in users">
+      <tr v-for="user in users">
         <td> {{user.id}} </td>
         <td> {{user.name}} </td>
         <td> {{user.email}} </td>
+        <td> {{user.card_type}} </td>
         <td> {{user.created_at}} </td>
         <td> {{user.updated_at}} </td>
-        <th><a class="button is-info is-small" @click="editUser(user.id)">Edit</a></th>
+        <th><a class="button is-small">Info</a></th>
+        <router-link :to="{ name: 'edit', params: { userId: user.id }}" tag="th">
+            <a class="button is-info is-small">Edit</a>
+        </router-link>
         <th><a class="button is-danger is-small user-delete" @click="deleteUser(user.id)">Delete</a></th>
     </tr>
   </tbody>
@@ -28,6 +33,7 @@
 
 <script>
     import Notification from './Notification';
+    import Info from './UserInfo';
     export default {
 
         data(){
@@ -39,7 +45,8 @@
 
         methods: {
 
-            redirectMessage(){
+            redirectMessage()
+            {
                  if (this.$route.query.message)
                     {
                         this.message = this.$route.query.message
@@ -47,14 +54,16 @@
 
             },
             
-            getUsers(){
+            getUsers()
+            {
                 axios.get('users')
                 .then( ({data}) => {
                     this.users = data;
                 });
             },
 
-            deleteUser(id){
+            deleteUser(id)
+            {
                 let self = this;
                 axios.post('user-delete', {
                     id
@@ -75,11 +84,17 @@
                     Event.$emit('fetchUsers');
                 })
                 
+            },
+
+            editUser(id)
+            {
+
             }
         },
 
         components: {
-            Notification
+            Notification,
+            Info
         },
 
         created() {
