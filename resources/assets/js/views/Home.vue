@@ -84,11 +84,6 @@
                     Event.$emit('fetchUsers');
                 })
                 
-            },
-
-            editUser(id)
-            {
-
             }
         },
 

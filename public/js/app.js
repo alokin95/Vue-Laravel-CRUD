@@ -50050,8 +50050,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
                 Event.$emit('fetchUsers');
             });
-        },
-        editUser: function editUser(id) {}
+        }
     },
 
     components: {
