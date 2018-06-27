@@ -17,7 +17,6 @@
         @include('layouts.header')
 
         <div class="section">
-        
             <div class="container">
 
                 <router-view></router-view>
