@@ -8,8 +8,15 @@ let routes = [
     },
 
     {
-      path: '/add',
-      component: require('./views/AddUser')
+        path: '/add',
+        component: require('./views/AddUser')
+    },
+
+    {
+        name: 'edit',
+        path: '/edit/:userId',
+        component: require('./views/EditUser'),
+        props: true
     }
 ];
 
