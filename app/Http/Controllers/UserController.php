@@ -34,4 +34,9 @@ class UserController extends Controller
         
         User::destroy(request()->id);
     }
+
+    public function singleUser($id)
+    {
+        return User::find($id);
+    }
 }
