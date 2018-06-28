@@ -20,7 +20,7 @@
         <td> {{user.card_type}} </td>
         <td> {{user.created_at}} </td>
         <td> {{user.updated_at}} </td>
-        <th><a class="button is-small">Info</a></th>
+        <th><a class="button is-small" @click="getSingleUser(user.id)">Info</a></th>
         <router-link :to="{ name: 'edit', params: { userId: user.id }}" tag="th">
             <a class="button is-info is-small">Edit</a>
         </router-link>
@@ -28,6 +28,7 @@
     </tr>
   </tbody>
 </table>
+<Info v-show = "isInfoVisible" @closeUserInfo = "isInfoVisible = false"></Info>
 </div>
 </template>
 
@@ -36,29 +37,33 @@
     import Info from './UserInfo';
     export default {
 
+        props: ['message'],
+
         data(){
             return {
                 users: [],
-                message: ""
+                user: "",
+                isInfoVisible : false
             }
         },
 
         methods: {
-
-            // redirectMessage()
-            // {
-            //      if (this.$route.query.message)
-            //         {
-            //             this.message = this.$route.query.message
-            //         }
-
-            // }
             
             getUsers()
             {
                 axios.get('users')
                 .then( ({data}) => {
                     this.users = data;
+                });
+            },
+
+            getSingleUser(id)
+            {
+                this.isInfoVisible = true;
+
+                 axios.get('user/' + id)
+                .then( ({data}) => {
+                    this.user = data;
                 });
             },
 
@@ -69,16 +74,12 @@
                     id
                 })
                 .then(function (response) {
-                    self.$router.push({
-                        path: '/',
-                        query: {
-                            message: "User successfully deleted"
-                        }
-                    });
+                    
+                    self.message = "User successfully deleted";
 
-                    if (self.$route.query.message)
+                    if (self.$route.params.message)
                     {
-                        self.message = self.$route.query.message
+                        self.message = self.$route.params.message
                     }
 
                     Event.$emit('fetchUsers');
@@ -96,10 +97,14 @@
 
             this.getUsers();
 
-            if (this.$route.query.message)
+            if (this.$route.params.message)
             {
-                this.message = this.$route.query.message
+                this.message = this.$route.params.message
             }
+
+            Event.$on('closeUserInfo', () => {
+                this.isInfoVisible = false;
+            });
 
             Event.$on('deleteMessage', () => this.message = "");
 
