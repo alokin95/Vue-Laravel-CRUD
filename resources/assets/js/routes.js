@@ -2,6 +2,7 @@ import VueRouter from 'vue-router';
 
 let routes = [
     {
+        name: 'Home',
         path: '/',
         component: require('./views/Home'),
         props: true
@@ -9,7 +10,8 @@ let routes = [
 
     {
         path: '/add',
-        component: require('./views/AddUser')
+        component: require('./views/AddUser'),
+        props: true
     },
 
     {
