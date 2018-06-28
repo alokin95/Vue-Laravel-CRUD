@@ -16,10 +16,15 @@ class UserController extends Controller
     public function addUser()
     {
         
+       
         $user = request()->validate([
             'name' => 'required|min:5|max:30',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6'
+            'password' => 'required|min:6',
+            'address' => 'required',
+            'card_number' => 'required|numeric|digits_between:1,20',
+            'card_type' => 'required|alpha_num',
+            'info' => 'required|max:300'
         ]);
 
         $new_user = new User($user);
