@@ -49897,12 +49897,14 @@ exports.clearImmediate = (typeof self !== "undefined" && self.clearImmediate) ||
 
 
 var routes = [{
+    name: 'Home',
     path: '/',
     component: __webpack_require__(42),
     props: true
 }, {
     path: '/add',
-    component: __webpack_require__(51)
+    component: __webpack_require__(51),
+    props: true
 }, {
     name: 'edit',
     path: '/edit/:userId',
@@ -50005,29 +50007,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
+
+    props: ['message'],
+
     data: function data() {
         return {
             users: [],
-            message: ""
+            user: "",
+            isInfoVisible: false
         };
     },
 
 
     methods: {
-
-        // redirectMessage()
-        // {
-        //      if (this.$route.query.message)
-        //         {
-        //             this.message = this.$route.query.message
-        //         }
-
-        // }
-
         getUsers: function getUsers() {
             var _this = this;
 
@@ -50037,20 +50034,27 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 _this.users = data;
             });
         },
+        getSingleUser: function getSingleUser(id) {
+            var _this2 = this;
+
+            this.isInfoVisible = true;
+
+            axios.get('user/' + id).then(function (_ref2) {
+                var data = _ref2.data;
+
+                _this2.user = data;
+            });
+        },
         deleteUser: function deleteUser(id) {
             var self = this;
             axios.post('user-delete', {
                 id: id
             }).then(function (response) {
-                self.$router.push({
-                    path: '/',
-                    query: {
-                        message: "User successfully deleted"
-                    }
-                });
 
-                if (self.$route.query.message) {
-                    self.message = self.$route.query.message;
+                self.message = "User successfully deleted";
+
+                if (self.$route.params.message) {
+                    self.message = self.$route.params.message;
                 }
 
                 Event.$emit('fetchUsers');
@@ -50064,20 +50068,24 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     created: function created() {
-        var _this2 = this;
+        var _this3 = this;
 
         this.getUsers();
 
-        if (this.$route.query.message) {
-            this.message = this.$route.query.message;
+        if (this.$route.params.message) {
+            this.message = this.$route.params.message;
         }
 
+        Event.$on('closeUserInfo', function () {
+            _this3.isInfoVisible = false;
+        });
+
         Event.$on('deleteMessage', function () {
-            return _this2.message = "";
+            return _this3.message = "";
         });
 
         Event.$on('fetchUsers', function () {
-            return _this2.getUsers();
+            return _this3.getUsers();
         });
     }
 });
@@ -50262,16 +50270,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  data: function data() {
-    return {
-      isVisible: true
-    };
-  },
 
+  props: ['user'],
 
   methods: {
     close: function close() {
-      this.isVisible = false;
+      Event.$emit('closeUserInfo');
     }
   }
 });
@@ -50284,44 +50288,25 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _vm.isVisible
-    ? _c("div", { staticClass: "modal is-active" }, [
-        _c("div", { staticClass: "modal-background" }),
+  return _c("div", { staticClass: "modal is-active" }, [
+    _c("div", { staticClass: "modal-background" }),
+    _vm._v(" "),
+    _c("div", { staticClass: "modal-card" }, [
+      _c("header", { staticClass: "modal-card-head" }, [
+        _c("p", { staticClass: "modal-card-title" }, [_vm._v("Modal title")]),
         _vm._v(" "),
-        _c("div", { staticClass: "modal-card" }, [
-          _c("header", { staticClass: "modal-card-head" }, [
-            _c("p", { staticClass: "modal-card-title" }, [
-              _vm._v("Modal title")
-            ]),
-            _vm._v(" "),
-            _c("button", {
-              staticClass: "delete",
-              attrs: { "aria-label": "close" },
-              on: { click: _vm.close }
-            })
-          ]),
-          _vm._v(" "),
-          _c("section", { staticClass: "modal-card-body" }),
-          _vm._v(" "),
-          _vm._m(0)
-        ])
-      ])
-    : _vm._e()
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("footer", { staticClass: "modal-card-foot" }, [
-      _c("button", { staticClass: "button is-success" }, [
-        _vm._v("Save changes")
+        _c("button", {
+          staticClass: "delete",
+          attrs: { "aria-label": "close" },
+          on: { click: _vm.close }
+        })
       ]),
       _vm._v(" "),
-      _c("button", { staticClass: "button" }, [_vm._v("Cancel")])
+      _c("section", { staticClass: "modal-card-body" })
     ])
-  }
-]
+  ])
+}
+var staticRenderFns = []
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -50367,7 +50352,20 @@ var render = function() {
                 _vm._v(" "),
                 _c("td", [_vm._v(" " + _vm._s(user.updated_at) + " ")]),
                 _vm._v(" "),
-                _vm._m(1, true),
+                _c("th", [
+                  _c(
+                    "a",
+                    {
+                      staticClass: "button is-small",
+                      on: {
+                        click: function($event) {
+                          _vm.getSingleUser(user.id)
+                        }
+                      }
+                    },
+                    [_vm._v("Info")]
+                  )
+                ]),
                 _vm._v(" "),
                 _c(
                   "router-link",
@@ -50403,7 +50401,23 @@ var render = function() {
             )
           })
         )
-      ])
+      ]),
+      _vm._v(" "),
+      _c("Info", {
+        directives: [
+          {
+            name: "show",
+            rawName: "v-show",
+            value: _vm.isInfoVisible,
+            expression: "isInfoVisible"
+          }
+        ],
+        on: {
+          closeUserInfo: function($event) {
+            _vm.isInfoVisible = false
+          }
+        }
+      })
     ],
     1
   )
@@ -50427,14 +50441,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Date updated")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("th", [
-      _c("a", { staticClass: "button is-small" }, [_vm._v("Info")])
     ])
   }
 ]
@@ -50552,6 +50558,58 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -50567,12 +50625,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             axios.post('user', {
                 name: this.user.name,
                 email: this.user.email,
-                password: this.user.password
+                password: this.user.password,
+                card_type: this.user.card_type,
+                card_number: this.user.card_number,
+                info: this.user.info,
+                address: this.user.address
             }).then(function (response) {
                 self.$router.push({
-                    path: '/',
-                    query: {
-                        message: "User successfully added"
+                    name: 'Home',
+                    params: {
+                        message: 'User successfully added'
                     }
                 });
             });
@@ -50699,7 +50761,7 @@ var render = function() {
               staticClass: "input",
               attrs: {
                 type: "password",
-                placeholder: "Password",
+                placeholder: "Your password",
                 value: "",
                 name: "password"
               },
@@ -50720,7 +50782,153 @@ var render = function() {
           ])
         ]),
         _vm._v(" "),
-        _vm._m(6)
+        _c("div", { staticClass: "field" }, [
+          _c("label", { staticClass: "label" }, [_vm._v("Address")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "control has-icons-left has-icons-right" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.user.address,
+                  expression: "user.address"
+                }
+              ],
+              staticClass: "input",
+              attrs: {
+                type: "text",
+                placeholder: "Your home address",
+                value: "",
+                name: "address"
+              },
+              domProps: { value: _vm.user.address },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.user, "address", $event.target.value)
+                }
+              }
+            }),
+            _vm._v(" "),
+            _vm._m(6),
+            _vm._v(" "),
+            _vm._m(7)
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "field" }, [
+          _c("label", { staticClass: "label" }, [_vm._v("Card number")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "control has-icons-left has-icons-right" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.user.card_number,
+                  expression: "user.card_number"
+                }
+              ],
+              staticClass: "input",
+              attrs: {
+                type: "text",
+                placeholder: "Credit card number",
+                value: "",
+                name: "card_number"
+              },
+              domProps: { value: _vm.user.card_number },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.user, "card_number", $event.target.value)
+                }
+              }
+            }),
+            _vm._v(" "),
+            _vm._m(8),
+            _vm._v(" "),
+            _vm._m(9)
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "field" }, [
+          _c("label", { staticClass: "label" }, [_vm._v("Card type")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "control has-icons-left has-icons-right" }, [
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.user.card_type,
+                  expression: "user.card_type"
+                }
+              ],
+              staticClass: "input",
+              attrs: {
+                type: "text",
+                placeholder: "Visa/MasterCard etc",
+                value: "",
+                name: "card_type"
+              },
+              domProps: { value: _vm.user.card_type },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.user, "card_type", $event.target.value)
+                }
+              }
+            }),
+            _vm._v(" "),
+            _vm._m(10),
+            _vm._v(" "),
+            _vm._m(11)
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "field" }, [
+          _c("label", { staticClass: "label" }, [_vm._v("Info")]),
+          _vm._v(" "),
+          _c("div", { staticClass: "control has-icons-left has-icons-right" }, [
+            _c("textarea", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.user.info,
+                  expression: "user.info"
+                }
+              ],
+              staticClass: "textarea",
+              attrs: {
+                placeholder: "Provide some info about yourself",
+                name: "info"
+              },
+              domProps: { value: _vm.user.info },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.$set(_vm.user, "info", $event.target.value)
+                }
+              }
+            }),
+            _vm._v(" "),
+            _vm._m(12),
+            _vm._v(" "),
+            _vm._m(13)
+          ])
+        ]),
+        _vm._v(" "),
+        _vm._m(14)
       ]
     )
   ])
@@ -50763,6 +50971,38 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c("span", { staticClass: "icon is-small is-left" }, [
+      _c("i", { staticClass: "fas fa-envelope" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-right" }, [
+      _c("i", { staticClass: "fas fa-exclamation-triangle" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-left" }, [
+      _c("i", { staticClass: "fas fa-envelope" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-right" }, [
+      _c("i", { staticClass: "fas fa-exclamation-triangle" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-left" }, [
       _c("i", { staticClass: "fas fa-user" })
     ])
   },
@@ -50772,6 +51012,38 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("span", { staticClass: "icon is-small is-right" }, [
       _c("i", { staticClass: "fas fa-check" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-left" }, [
+      _c("i", { staticClass: "fas fa-envelope" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-right" }, [
+      _c("i", { staticClass: "fas fa-exclamation-triangle" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-left" }, [
+      _c("i", { staticClass: "fas fa-envelope" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-right" }, [
+      _c("i", { staticClass: "fas fa-exclamation-triangle" })
     ])
   },
   function() {
