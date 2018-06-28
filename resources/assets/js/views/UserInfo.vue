@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isVisible" class="modal is-active">
+  <div class="modal is-active">
     <div class="modal-background">
 
     </div>
@@ -11,28 +11,25 @@
         <section class="modal-card-body">
         <!-- Content ... -->
         </section>
-        <footer class="modal-card-foot">
+        <!-- <footer class="modal-card-foot">
           <button class="button is-success">Save changes</button>
           <button class="button">Cancel</button>
-        </footer>
+        </footer> -->
       </div>
   </div>
 </template>
 
 <script>
   export default {
-    
-    data(){
-      return {
-        isVisible: true
-      }
-    },
+
+
+    props: ['user'],
 
     methods: {
       
       close()
       {
-        this.isVisible = false;
+        Event.$emit('closeUserInfo');
       }
     }
   }
