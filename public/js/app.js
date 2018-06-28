@@ -50078,6 +50078,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         Event.$on('closeUserInfo', function () {
             _this3.isInfoVisible = false;
+            _this3.user = "";
         });
 
         Event.$on('deleteMessage', function () {
@@ -50267,7 +50268,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 
@@ -50293,7 +50293,9 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "modal-card" }, [
       _c("header", { staticClass: "modal-card-head" }, [
-        _c("p", { staticClass: "modal-card-title" }, [_vm._v("Modal title")]),
+        _c("p", { staticClass: "modal-card-title" }, [
+          _vm._v("  " + _vm._s(_vm.user.name))
+        ]),
         _vm._v(" "),
         _c("button", {
           staticClass: "delete",
@@ -50412,6 +50414,7 @@ var render = function() {
             expression: "isInfoVisible"
           }
         ],
+        attrs: { user: _vm.user },
         on: {
           closeUserInfo: function($event) {
             _vm.isInfoVisible = false

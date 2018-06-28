@@ -28,7 +28,7 @@
     </tr>
   </tbody>
 </table>
-<Info v-show = "isInfoVisible" @closeUserInfo = "isInfoVisible = false"></Info>
+<Info v-show = "isInfoVisible" @closeUserInfo = "isInfoVisible = false" :user="user"></Info>
 </div>
 </template>
 
@@ -104,6 +104,7 @@
 
             Event.$on('closeUserInfo', () => {
                 this.isInfoVisible = false;
+                this.user = "";
             });
 
             Event.$on('deleteMessage', () => this.message = "");
