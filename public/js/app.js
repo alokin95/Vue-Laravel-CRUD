@@ -49907,7 +49907,7 @@ var routes = [{
     props: true
 }, {
     name: 'edit',
-    path: '/edit/:userId',
+    path: '/edit',
     component: __webpack_require__(54),
     props: true
 }];
@@ -50008,6 +50008,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
@@ -50019,7 +50029,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         return {
             users: [],
             user: "",
-            isInfoVisible: false
+            isInfoVisible: false,
+            name: ""
         };
     },
 
@@ -50087,6 +50098,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
         Event.$on('fetchUsers', function () {
             return _this3.getUsers();
+        });
+        Event.$on('user-deleted', function (id) {
+            _this3.deleteUser(id);
+            _this3.isInfoVisible = false;
+            _this3.user = "";
         });
     }
 });
@@ -50268,6 +50284,31 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
 
@@ -50276,6 +50317,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
   methods: {
     close: function close() {
       Event.$emit('closeUserInfo');
+    },
+    deleteUser: function deleteUser() {
+      Event.$emit('user-deleted', this.user.id);
     }
   }
 });
@@ -50293,9 +50337,7 @@ var render = function() {
     _vm._v(" "),
     _c("div", { staticClass: "modal-card" }, [
       _c("header", { staticClass: "modal-card-head" }, [
-        _c("p", { staticClass: "modal-card-title" }, [
-          _vm._v("  " + _vm._s(_vm.user.name))
-        ]),
+        _c("p", { staticClass: "modal-card-title" }, [_vm._v("User details")]),
         _vm._v(" "),
         _c("button", {
           staticClass: "delete",
@@ -50304,11 +50346,91 @@ var render = function() {
         })
       ]),
       _vm._v(" "),
-      _c("section", { staticClass: "modal-card-body" })
+      _c("section", { staticClass: "modal-card-body" }, [
+        _c("div", { staticClass: "card" }, [
+          _c("header", { staticClass: "card-header" }, [
+            _c("p", { staticClass: "card-header-title" }, [
+              _vm._v(
+                "\n              " + _vm._s(_vm.user.name) + "\n            "
+              )
+            ]),
+            _vm._v(" "),
+            _vm._m(0)
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "card-content" }, [
+            _c("div", { staticClass: "content" }, [
+              _c("p", [_vm._v(" " + _vm._s(_vm.user.email) + " ")]),
+              _vm._v(" "),
+              _c("p", [_vm._v(" " + _vm._s(_vm.user.address) + " ")]),
+              _vm._v(" "),
+              _c("p", [_vm._v(" " + _vm._s(_vm.user.card_type) + " ")]),
+              _vm._v(" "),
+              _c("p", [_vm._v(" " + _vm._s(_vm.user.card_number) + " ")]),
+              _vm._v(" "),
+              _c("p", [_vm._v(" " + _vm._s(_vm.user.info) + " ")]),
+              _vm._v(" "),
+              _c("br"),
+              _vm._v(" "),
+              _c("time", { attrs: { datetime: "2016-1-1" } }, [
+                _vm._v("Membership since: " + _vm._s(_vm.user.created_at))
+              ])
+            ])
+          ]),
+          _vm._v(" "),
+          _c(
+            "footer",
+            { staticClass: "card-footer" },
+            [
+              _c(
+                "router-link",
+                {
+                  staticClass: "card-footer-item",
+                  attrs: {
+                    to: { name: "edit", params: { userId: _vm.user.id } }
+                  }
+                },
+                [_vm._v("\n              Edit\n            ")]
+              ),
+              _vm._v(" "),
+              _c(
+                "a",
+                {
+                  staticClass: "card-footer-item",
+                  on: { click: _vm.deleteUser }
+                },
+                [_vm._v("Delete")]
+              )
+            ],
+            1
+          )
+        ])
+      ])
     ])
   ])
 }
-var staticRenderFns = []
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "a",
+      {
+        staticClass: "card-header-icon",
+        attrs: { href: "#", "aria-label": "more options" }
+      },
+      [
+        _c("span", { staticClass: "icon" }, [
+          _c("i", {
+            staticClass: "fas fa-angle-down",
+            attrs: { "aria-hidden": "true" }
+          })
+        ])
+      ]
+    )
+  }
+]
 render._withStripped = true
 module.exports = { render: render, staticRenderFns: staticRenderFns }
 if (false) {
@@ -50333,8 +50455,10 @@ var render = function() {
         ? _c("Notification", { attrs: { message: _vm.message } })
         : _vm._e(),
       _vm._v(" "),
+      _vm._m(0),
+      _vm._v(" "),
       _c("table", { staticClass: "table is-hoverable" }, [
-        _vm._m(0),
+        _vm._m(1),
         _vm._v(" "),
         _c(
           "tbody",
@@ -50369,20 +50493,24 @@ var render = function() {
                   )
                 ]),
                 _vm._v(" "),
-                _c(
-                  "router-link",
-                  {
-                    attrs: {
-                      to: { name: "edit", params: { userId: user.id } },
-                      tag: "th"
-                    }
-                  },
-                  [
-                    _c("a", { staticClass: "button is-info is-small" }, [
-                      _vm._v("Edit")
-                    ])
-                  ]
-                ),
+                user.id
+                  ? [
+                      _c(
+                        "router-link",
+                        {
+                          attrs: {
+                            to: { name: "edit", params: { userId: user.id } },
+                            tag: "th"
+                          }
+                        },
+                        [
+                          _c("a", { staticClass: "button is-info is-small" }, [
+                            _vm._v("Edit")
+                          ])
+                        ]
+                      )
+                    ]
+                  : _vm._e(),
                 _vm._v(" "),
                 _c("th", [
                   _c(
@@ -50399,7 +50527,7 @@ var render = function() {
                   )
                 ])
               ],
-              1
+              2
             )
           })
         )
@@ -50426,6 +50554,14 @@ var render = function() {
   )
 }
 var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "field" }, [
+      _c("div", { staticClass: "control" })
+    ])
+  },
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -50613,6 +50749,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
@@ -50662,6 +50800,10 @@ var render = function() {
     _c("a", { staticClass: "button is-outlined", on: { click: _vm.back } }, [
       _vm._v("Back")
     ]),
+    _vm._v(" "),
+    _c("br"),
+    _vm._v(" "),
+    _c("br"),
     _vm._v(" "),
     _c(
       "form",
@@ -51184,6 +51326,71 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: ['userId'],
@@ -51203,6 +51410,32 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         var data = _ref.data;
 
         _this.user = data;
+      });
+    },
+    editUser: function editUser() {
+      var self = this;
+      axios.post('user/' + this.user.id, {
+        user: this.user
+      }).then(function (response) {
+        self.$router.push({
+          name: 'Home',
+          params: {
+            message: 'User successfully edited'
+          }
+        });
+      });
+    },
+    deleteUser: function deleteUser() {
+      var self = this;
+      axios.post('user-delete', {
+        id: this.userId
+      }).then(function (response) {
+        self.$router.push({
+          name: 'Home',
+          params: {
+            message: "User deleted"
+          }
+        });
       });
     },
     back: function back() {
@@ -51225,20 +51458,28 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("section", { staticClass: "section" }, [
     _c("div", { staticClass: "container" }, [
-      _c("a", { staticClass: "button is-outlined", on: { click: _vm.back } }, [
-        _vm._v("Back")
+      _c("div", { staticClass: "field is-grouped" }, [
+        _c("p", { staticClass: "control" }, [
+          _c("a", { staticClass: "button is-link", on: { click: _vm.back } }, [
+            _vm._v("\n            Back\n          ")
+          ])
+        ]),
+        _vm._v(" "),
+        _c("p", { staticClass: "control" }, [
+          _c(
+            "a",
+            { staticClass: "button is-danger", on: { click: _vm.deleteUser } },
+            [_vm._v("\n            Delete user\n          ")]
+          )
+        ])
       ]),
       _vm._v(" "),
-      _c("h1", { staticClass: "title" }, [_vm._v("User information")]),
+      _c("h1", { staticClass: "title" }, [_vm._v("Edit user information")]),
       _vm._v(" "),
       _c("hr"),
       _vm._v(" "),
       _c("h2", { staticClass: "subtitle" }, [
-        _c("p", [_vm._v(_vm._s(_vm.user.name))]),
-        _vm._v(" "),
-        _c("br"),
-        _vm._v(" "),
-        _c("p", [_vm._v(_vm._s(_vm.user.email))])
+        _vm._v("\n        Edit user information\n      ")
       ]),
       _vm._v(" "),
       _c(
@@ -51334,7 +51575,210 @@ var render = function() {
             )
           ]),
           _vm._v(" "),
-          _vm._m(4)
+          _c("div", { staticClass: "field" }, [
+            _c("label", { staticClass: "label" }, [_vm._v("Password")]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "control has-icons-left has-icons-right" },
+              [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.password,
+                      expression: "user.password"
+                    }
+                  ],
+                  staticClass: "input",
+                  attrs: {
+                    type: "password",
+                    placeholder: "Your password",
+                    value: "",
+                    name: "password"
+                  },
+                  domProps: { value: _vm.user.password },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.user, "password", $event.target.value)
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _vm._m(4),
+                _vm._v(" "),
+                _vm._m(5)
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "field" }, [
+            _c("label", { staticClass: "label" }, [_vm._v("Address")]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "control has-icons-left has-icons-right" },
+              [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.address,
+                      expression: "user.address"
+                    }
+                  ],
+                  staticClass: "input",
+                  attrs: {
+                    type: "text",
+                    placeholder: "Your home address",
+                    value: "",
+                    name: "address"
+                  },
+                  domProps: { value: _vm.user.address },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.user, "address", $event.target.value)
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _vm._m(6),
+                _vm._v(" "),
+                _vm._m(7)
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "field" }, [
+            _c("label", { staticClass: "label" }, [_vm._v("Card number")]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "control has-icons-left has-icons-right" },
+              [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.card_number,
+                      expression: "user.card_number"
+                    }
+                  ],
+                  staticClass: "input",
+                  attrs: {
+                    type: "text",
+                    placeholder: "Credit card number",
+                    value: "",
+                    name: "card_number"
+                  },
+                  domProps: { value: _vm.user.card_number },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.user, "card_number", $event.target.value)
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _vm._m(8),
+                _vm._v(" "),
+                _vm._m(9)
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "field" }, [
+            _c("label", { staticClass: "label" }, [_vm._v("Card type")]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "control has-icons-left has-icons-right" },
+              [
+                _c("input", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.card_type,
+                      expression: "user.card_type"
+                    }
+                  ],
+                  staticClass: "input",
+                  attrs: {
+                    type: "text",
+                    placeholder: "Visa/MasterCard etc",
+                    value: "",
+                    name: "card_type"
+                  },
+                  domProps: { value: _vm.user.card_type },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.user, "card_type", $event.target.value)
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _vm._m(10),
+                _vm._v(" "),
+                _vm._m(11)
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _c("div", { staticClass: "field" }, [
+            _c("label", { staticClass: "label" }, [_vm._v("Info")]),
+            _vm._v(" "),
+            _c(
+              "div",
+              { staticClass: "control has-icons-left has-icons-right" },
+              [
+                _c("textarea", {
+                  directives: [
+                    {
+                      name: "model",
+                      rawName: "v-model",
+                      value: _vm.user.info,
+                      expression: "user.info"
+                    }
+                  ],
+                  staticClass: "textarea",
+                  attrs: {
+                    placeholder: "Provide some info about yourself",
+                    name: "info"
+                  },
+                  domProps: { value: _vm.user.info },
+                  on: {
+                    input: function($event) {
+                      if ($event.target.composing) {
+                        return
+                      }
+                      _vm.$set(_vm.user, "info", $event.target.value)
+                    }
+                  }
+                }),
+                _vm._v(" "),
+                _vm._m(12),
+                _vm._v(" "),
+                _vm._m(13)
+              ]
+            )
+          ]),
+          _vm._v(" "),
+          _vm._m(14)
         ]
       )
     ])
@@ -51355,6 +51799,86 @@ var staticRenderFns = [
     var _c = _vm._self._c || _h
     return _c("span", { staticClass: "icon is-small is-right" }, [
       _c("i", { staticClass: "fas fa-check" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-left" }, [
+      _c("i", { staticClass: "fas fa-envelope" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-right" }, [
+      _c("i", { staticClass: "fas fa-exclamation-triangle" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-left" }, [
+      _c("i", { staticClass: "fas fa-envelope" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-right" }, [
+      _c("i", { staticClass: "fas fa-exclamation-triangle" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-left" }, [
+      _c("i", { staticClass: "fas fa-envelope" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-right" }, [
+      _c("i", { staticClass: "fas fa-exclamation-triangle" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-left" }, [
+      _c("i", { staticClass: "fas fa-user" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-right" }, [
+      _c("i", { staticClass: "fas fa-check" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-left" }, [
+      _c("i", { staticClass: "fas fa-envelope" })
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("span", { staticClass: "icon is-small is-right" }, [
+      _c("i", { staticClass: "fas fa-exclamation-triangle" })
     ])
   },
   function() {
