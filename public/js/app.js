@@ -50465,6 +50465,7 @@ var render = function() {
           _vm._l(_vm.users, function(user) {
             return _c(
               "tr",
+              { key: user.id },
               [
                 _c("td", [_vm._v(" " + _vm._s(user.id) + " ")]),
                 _vm._v(" "),
