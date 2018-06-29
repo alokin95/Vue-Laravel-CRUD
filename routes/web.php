@@ -12,3 +12,5 @@ Route::post('/user', 'UserController@addUser'); //Adds new user to the database
 Route::post('/user-delete', 'UserController@deleteUser'); //Deletes user from the database
 
 Route::get('/user/{id}', 'UserController@singleUser'); //Fetch user by ID
+
+Route::post('/user/{user}', 'UserController@edit'); //Updates single user in the database
