@@ -1,6 +1,11 @@
 <template>
 <div>
     <Notification v-if="message" :message="message"></Notification>
+    <div class="field">
+  <div class="control">
+    <!-- <input class="input is-info" type="text" placeholder="Search members by name" @keyup="search" v-model="name"> -->
+  </div>
+</div>
     <table class="table is-hoverable">
   <thead>
     <tr>
@@ -21,9 +26,13 @@
         <td> {{user.created_at}} </td>
         <td> {{user.updated_at}} </td>
         <th><a class="button is-small" @click="getSingleUser(user.id)">Info</a></th>
-        <router-link :to="{ name: 'edit', params: { userId: user.id }}" tag="th">
-            <a class="button is-info is-small">Edit</a>
-        </router-link>
+
+        <template v-if="user.id">
+            <router-link :to="{ name: 'edit', params: { userId: user.id }}" tag="th">
+                <a class="button is-info is-small">Edit</a>
+            </router-link>
+        </template>
+
         <th><a class="button is-danger is-small user-delete" @click="deleteUser(user.id)">Delete</a></th>
     </tr>
   </tbody>
@@ -35,6 +44,7 @@
 <script>
     import Notification from './Notification';
     import Info from './UserInfo';
+
     export default {
 
         props: ['message'],
@@ -43,7 +53,8 @@
             return {
                 users: [],
                 user: "",
-                isInfoVisible : false
+                isInfoVisible : false,
+                name: ""
             }
         },
 
@@ -110,6 +121,12 @@
             Event.$on('deleteMessage', () => this.message = "");
 
             Event.$on('fetchUsers', () => this.getUsers());
+            Event.$on('user-deleted', (id) => {
+                this.deleteUser(id);
+                this.isInfoVisible = false;
+                this.user = "";
+            });
+            
         }
 
     }
