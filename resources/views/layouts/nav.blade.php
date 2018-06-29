@@ -1,4 +1,4 @@
-<nav class="tabs is-boxed">
+<nav class="tabs is-boxed is-centered">
       <div class="container">
         <ul>
 
