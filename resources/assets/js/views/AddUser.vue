@@ -1,6 +1,8 @@
 <template>
 <div>
 <a class="button is-outlined" @click="back">Back</a>
+<br>
+<br>
 <form @submit.prevent="addUser">
 <div class="field">
   <label class="label">Name</label>
