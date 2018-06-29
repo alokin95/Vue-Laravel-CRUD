@@ -24,4 +24,39 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+
+    public function Edit($edited)
+    {
+
+        if (!array_key_exists('password', $edited))
+        {
+            return $this::where('id', $edited['id'])
+            ->update([
+                    'name' => $edited['name'],
+                    'email' => $edited['email'],
+                    'address' => $edited['address'],
+                    'card_type' => $edited['card_type'],
+                    'card_number' => $edited['card_number'],
+                    'info' => $edited['info']
+            ]);
+        }
+
+        return $this::where('id', $edited['id'])
+            ->update([
+                    'name' => $edited['name'],
+                    'email' => $edited['email'],
+                    'address' => $edited['address'],
+                    'card_type' => $edited['card_type'],
+                    'card_number' => $edited['card_number'],
+                    'info' => $edited['info'],
+                    'password' => bcrypt($edited['password'])
+            ]);
+
+    }
+
+    public static function deleteUser()
+    {
+        self::destroy(request()->id);
+    }
 }
