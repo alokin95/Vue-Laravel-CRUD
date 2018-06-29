@@ -16,7 +16,7 @@ let routes = [
 
     {
         name: 'edit',
-        path: '/edit/:userId',
+        path: '/edit',
         component: require('./views/EditUser'),
         props: true
     }
