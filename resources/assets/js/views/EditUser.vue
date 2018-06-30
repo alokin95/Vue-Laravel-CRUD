@@ -172,7 +172,7 @@
             self.$router.push({
               name: 'Home',
               params: {
-                message: "User deleted"
+                message: "User successfully deleted"
               }
             })        
           })
