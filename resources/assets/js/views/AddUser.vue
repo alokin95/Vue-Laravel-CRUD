@@ -105,17 +105,23 @@
 </template>
 
 <script>
+  
+    import Validator from '../Validator';
+
     export default {
 
         data(){
             return {
-                user: {}
+                user: {},
+                errors: Validator
             }
         },
 
         methods: {
             addUser(){
+
                 let self = this;
+
                 axios.post('user', {
                     name: this.user.name,
                     email: this.user.email,
@@ -133,6 +139,9 @@
                         }
                     });
                 })
+                .catch(function (error) {
+                  self.errors.store(error.response.data);
+              });
             },
 
           back()
