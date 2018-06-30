@@ -82,4 +82,9 @@ class UserController extends Controller
 
        return 'Error when updating user. Please try again.';
     }
+
+    public function search()
+    {
+        return User::where('name','like', '%'.request()->username.'%')->get();
+    }
 }
