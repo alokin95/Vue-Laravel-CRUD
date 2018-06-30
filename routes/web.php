@@ -14,3 +14,5 @@ Route::post('/user-delete', 'UserController@deleteUser'); //Deletes user from th
 Route::get('/user/{id}', 'UserController@singleUser'); //Fetch user by ID
 
 Route::post('/user/{user}', 'UserController@edit'); //Updates single user in the database
+
+Route::get('user-search', 'UserController@search'); //Filtering members by name
