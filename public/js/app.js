@@ -17405,9 +17405,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         back: function back() {
             this.$router.go(-1);
         }
-    },
-
-    mounted: function mounted() {}
+    }
 });
 
 /***/ }),

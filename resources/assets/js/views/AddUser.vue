@@ -119,10 +119,6 @@
           {
             this.$router.go(-1);
           }
-        },
-
-        mounted() {
-            
         }
     }
 </script>
